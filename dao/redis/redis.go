@@ -3,18 +3,18 @@ package redis
 import (
 	"fmt"
 	"github.com/go-redis/redis"
-	"github.com/spf13/viper"
+	"strconv"
+	"web_app/settings"
 )
 
 var rdb *redis.Client
 
-func Init() (err error) {
-
+func Init(conf *settings.RedisConfig) (err error) {
 	rdb = redis.NewClient(&redis.Options{
-		Addr:     fmt.Sprintf("%s:%s", viper.GetString("redis.host"), viper.GetString("redis.port")),
-		Password: viper.GetString("redis.password"),
-		DB:       viper.GetInt("redis.db"),
-		PoolSize: viper.GetInt("redis.pool_max_size"),
+		Addr:     fmt.Sprintf("%s:%s", conf.Host, strconv.Itoa(conf.Port)),
+		Password: conf.Password,
+		DB:       conf.DB,
+		PoolSize: conf.PoolSize,
 	})
 
 	_, err = rdb.Ping().Result()

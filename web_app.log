@@ -1,2 +1,0 @@
-{"level":"info","ts":"2022-01-22T14:49:00.167+0800","caller":"web_app/main.go:34","msg":" 日志初始化成功"}
-{"level":"info","ts":"2022-01-22T14:49:15.873+0800","caller":"web_app/main.go:79","msg":"server exit~~~"}

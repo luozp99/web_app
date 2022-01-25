@@ -3,7 +3,6 @@ package logger
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/natefinch/lumberjack"
-	"github.com/spf13/viper"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"net"
@@ -12,14 +11,15 @@ import (
 	"runtime/debug"
 	"strings"
 	"time"
+	"web_app/settings"
 )
 
-func Init() (err error) {
-	writerSyncer := getLogWriter()
+func Init(conf *settings.LogConfig) (err error) {
+	writerSyncer := getLogWriter(conf)
 	encoder := getEncoder()
 
 	var level = new(zapcore.Level)
-	err = level.UnmarshalText([]byte(viper.GetString("log.level")))
+	err = level.UnmarshalText([]byte(conf.Level))
 	if err != nil {
 		return err
 	}
@@ -51,13 +51,13 @@ func getEncoder() zapcore.Encoder {
 	return zapcore.NewJSONEncoder(encoder)
 }
 
-func getLogWriter() zapcore.WriteSyncer {
+func getLogWriter(conf *settings.LogConfig) zapcore.WriteSyncer {
 	//file, _ := os.OpenFile("./test.log",os.O_CREATE|os.O_APPEND|os.O_RDONLY,0744)
 	lumberjackLogger := &lumberjack.Logger{
-		Filename:   viper.GetString("log.filename"),
-		MaxSize:    viper.GetInt("log.max_size"),
-		MaxBackups: viper.GetInt("log.max_age"),
-		MaxAge:     viper.GetInt("log.max_backups"),
+		Filename:   conf.Filename,
+		MaxSize:    conf.MaxSize,
+		MaxBackups: conf.MaxBackUps,
+		MaxAge:     conf.MaxAge,
 		Compress:   false,
 	}
 
