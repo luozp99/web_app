@@ -6,12 +6,25 @@ import (
 	"web_app/pkg/snowflake"
 )
 
-func SignUp(user *modles.UserSignUp) {
+func SignUp(user *modles.UserSignUp) (err error) {
+	err = userDao.QueryUserByName(user.UserName)
+	if err != nil {
+		return err
+	}
 
-	userDao.QueryUserByName(user.UserName)
+	userId := snowflake.GenId()
 
-	_ = snowflake.GenId()
+	var signUser = &modles.UserDO{
+		Id:       userId,
+		Name:     user.UserName,
+		Password: user.Password,
+	}
 
-	userDao.InsertUser()
+	return userDao.InsertUser(signUser)
+}
 
+func LoginUser(loginUser *modles.LoginUser) (bool, error) {
+
+	userDao.QueryUserByName(loginUser.UserName)
+	return false, nil
 }

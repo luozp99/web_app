@@ -28,7 +28,32 @@ func SignUpHandler(c *gin.Context) {
 		return
 	}
 
-	logic.SignUp(&user)
+	if err = logic.SignUp(&user); err != nil {
+		c.JSON(http.StatusInternalServerError, response.ErrorMsg(err.Error()))
+		return
+	}
 
 	c.JSON(http.StatusOK, response.Success())
+}
+
+func LoginHandler(c *gin.Context) {
+	var loginUser modles.LoginUser
+
+	err := c.ShouldBindJSON(&loginUser)
+	if err != nil {
+		zap.L().Error("参数解析异常 err", zap.Error(err))
+
+		errs, ok := err.(validator.ValidationErrors)
+		if !ok {
+			c.JSON(http.StatusInternalServerError, response.ErrorMsg(err.Error()))
+			return
+		}
+		c.JSON(http.StatusInternalServerError, response.ErrorMsg(translate.RemoveTopStruct(errs.Translate(translate.Trans))))
+		return
+	}
+
+	logic.LoginUser(&loginUser)
+
+	c.JSON(http.StatusOK, response.Success())
+
 }

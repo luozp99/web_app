@@ -34,3 +34,7 @@ func InitDB(conf *settings.MySqlConfig) (err error) {
 func Close() {
 	db.Close()
 }
+
+func GetDb() *sqlx.DB {
+	return db
+}
