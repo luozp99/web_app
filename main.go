@@ -26,7 +26,7 @@ func main() {
 		return
 	}
 
-	err = logger.Init(settings.Conf.LogConfig)
+	err = logger.Init(settings.Conf.LogConfig, settings.Conf.Mode)
 	if err != nil {
 		fmt.Println("初始化全局日志失败 err=", err)
 		return

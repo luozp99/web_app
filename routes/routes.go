@@ -9,6 +9,10 @@ import (
 )
 
 func Setup(conf *settings.AppConfig) *gin.Engine {
+	if conf.Mode == gin.ReleaseMode {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
 	r := gin.New()
 
 	r.Use(logger.GinLogger(), logger.GinRecovery(true))

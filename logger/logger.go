@@ -14,7 +14,7 @@ import (
 	"web_app/settings"
 )
 
-func Init(conf *settings.LogConfig) (err error) {
+func Init(conf *settings.LogConfig, mode string) (err error) {
 	writerSyncer := getLogWriter(conf)
 	encoder := getEncoder()
 
@@ -23,8 +23,19 @@ func Init(conf *settings.LogConfig) (err error) {
 	if err != nil {
 		return err
 	}
-	core := zapcore.NewCore(encoder, writerSyncer, level)
 
+	var core zapcore.Core
+
+	if mode == "dev" {
+		cosoleEnbcoder := zapcore.NewConsoleEncoder(zap.NewDevelopmentEncoderConfig())
+		core = zapcore.NewTee(
+			zapcore.NewCore(encoder, writerSyncer, level),
+			zapcore.NewCore(cosoleEnbcoder, zapcore.Lock(os.Stdout), level),
+		)
+
+	} else {
+		core = zapcore.NewCore(encoder, writerSyncer, level)
+	}
 	logger := zap.New(core, zap.AddCaller())
 
 	zap.ReplaceGlobals(logger.Sugar().Desugar())
