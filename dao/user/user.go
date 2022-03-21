@@ -2,13 +2,14 @@ package dao
 
 import (
 	"crypto/md5"
+	"database/sql"
 	"encoding/hex"
 	"errors"
 	"web_app/dao/mysql"
 	"web_app/modles"
 )
 
-var secret string = "aa123456"
+var secret = "aa123456"
 
 func QueryUserByName(name string) error {
 	strSql := "select count(id) from user where name = ?"
@@ -37,6 +38,23 @@ func encryptPassword(password string) (pwd string) {
 	return hex.EncodeToString(h.Sum([]byte(password)))
 }
 
-func QueryUserByNameAndPwd(name string, pwd string) {
+func QueryUserByNameAndPwd(name string, pwd string) (err error) {
+	var password = encryptPassword(pwd)
 
+	strSql := "select id,name,password from user where name = ?"
+	db := mysql.GetDb()
+	var user = &modles.UserDO{}
+	err = db.Get(user, strSql, name)
+	if err == sql.ErrNoRows {
+		return errors.New("用户不存在")
+	}
+
+	if err != nil {
+		return err
+	}
+
+	if password != user.Password {
+		return errors.New("密码输入错误")
+	}
+	return err
 }

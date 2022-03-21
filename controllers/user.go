@@ -52,8 +52,12 @@ func LoginHandler(c *gin.Context) {
 		return
 	}
 
-	logic.LoginUser(&loginUser)
+	err = logic.LoginUser(&loginUser)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, response.ErrorMsg(err.Error()))
+		return
+	}
 
-	c.JSON(http.StatusOK, response.Success())
+	c.JSON(http.StatusOK, response.SuccessMsg("登陆成功"))
 
 }

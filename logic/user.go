@@ -23,8 +23,6 @@ func SignUp(user *modles.UserSignUp) (err error) {
 	return userDao.InsertUser(signUser)
 }
 
-func LoginUser(loginUser *modles.LoginUser) (bool, error) {
-
-	userDao.QueryUserByName(loginUser.UserName)
-	return false, nil
+func LoginUser(loginUser *modles.LoginUser) error {
+	return userDao.QueryUserByNameAndPwd(loginUser.UserName, loginUser.Password)
 }

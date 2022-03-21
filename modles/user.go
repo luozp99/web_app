@@ -13,7 +13,7 @@ type LoginUser struct {
 
 type UserDO struct {
 	Id       int64  `db:"id""`
-	Name     string `db:"string"`
+	Name     string `db:"name"`
 	Age      int    `db:"age"`
 	Phone    string `db:"phone"`
 	Password string `db:"password"`

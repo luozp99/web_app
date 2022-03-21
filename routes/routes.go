@@ -27,7 +27,7 @@ func Setup(conf *settings.AppConfig) *gin.Engine {
 
 	r.GET("/signup", controllers.SignUpHandler)
 
-	r.GET("/login", controllers.LoginHandler)
+	r.POST("/login", controllers.LoginHandler)
 
 	return r
 }
