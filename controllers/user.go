@@ -4,10 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"go.uber.org/zap"
-	"net/http"
 	"web_app/logic"
 	"web_app/modles"
-	"web_app/response"
 	"web_app/translate"
 )
 
@@ -21,19 +19,22 @@ func SignUpHandler(c *gin.Context) {
 
 		errs, ok := err.(validator.ValidationErrors)
 		if !ok {
-			c.JSON(http.StatusInternalServerError, response.ErrorMsg(err.Error()))
+			ResponseError(c, CodeInvalidParam)
 			return
 		}
-		c.JSON(http.StatusInternalServerError, response.ErrorMsg(translate.RemoveTopStruct(errs.Translate(translate.Trans))))
+		ResponseErrorWithMsg(c, CodeInvalidParam, translate.RemoveTopStruct(errs.Translate(translate.Trans)))
+		//c.JSON(http.StatusInternalServerError, response.ErrorMsg(translate.RemoveTopStruct(errs.Translate(translate.Trans))))
 		return
 	}
 
 	if err = logic.SignUp(&user); err != nil {
-		c.JSON(http.StatusInternalServerError, response.ErrorMsg(err.Error()))
+		//c.JSON(http.StatusInternalServerError, response.ErrorMsg(err.Error()))
+		ResponseError(c, CodeUserExist)
 		return
 	}
 
-	c.JSON(http.StatusOK, response.Success())
+	//c.JSON(http.StatusOK, response.Success())
+	ResponseSuccess(c, nil)
 }
 
 func LoginHandler(c *gin.Context) {
@@ -45,19 +46,23 @@ func LoginHandler(c *gin.Context) {
 
 		errs, ok := err.(validator.ValidationErrors)
 		if !ok {
-			c.JSON(http.StatusInternalServerError, response.ErrorMsg(err.Error()))
+			//c.JSON(http.StatusInternalServerError, response.ErrorMsg(err.Error()))
+			ResponseError(c, CodeInvalidParam)
 			return
 		}
-		c.JSON(http.StatusInternalServerError, response.ErrorMsg(translate.RemoveTopStruct(errs.Translate(translate.Trans))))
+		ResponseErrorWithMsg(c, CodeInvalidParam, translate.RemoveTopStruct(errs.Translate(translate.Trans)))
+		//c.JSON(http.StatusInternalServerError, response.ErrorMsg(translate.RemoveTopStruct(errs.Translate(translate.Trans))))
 		return
 	}
 
 	err = logic.LoginUser(&loginUser)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, response.ErrorMsg(err.Error()))
+		ResponseError(c, CodeInvalidPassword)
+		//c.JSON(http.StatusInternalServerError, response.ErrorMsg(err.Error()))
 		return
 	}
+	ResponseSuccess(c, nil)
 
-	c.JSON(http.StatusOK, response.SuccessMsg("登陆成功"))
+	//c.JSON(http.StatusOK, response.SuccessMsg("登陆成功"))
 
 }
