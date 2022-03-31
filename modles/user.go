@@ -7,6 +7,7 @@ type UserSignUp struct {
 }
 
 type LoginUser struct {
+	Id       int64  `json:"id"`
 	UserName string `json:"username" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }

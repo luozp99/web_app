@@ -55,13 +55,13 @@ func LoginHandler(c *gin.Context) {
 		return
 	}
 
-	err = logic.LoginUser(&loginUser)
+	token, err := logic.LoginUser(&loginUser)
 	if err != nil {
 		ResponseError(c, CodeInvalidPassword)
 		//c.JSON(http.StatusInternalServerError, response.ErrorMsg(err.Error()))
 		return
 	}
-	ResponseSuccess(c, nil)
+	ResponseSuccess(c, token)
 
 	//c.JSON(http.StatusOK, response.SuccessMsg("登陆成功"))
 

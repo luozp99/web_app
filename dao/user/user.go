@@ -38,13 +38,13 @@ func encryptPassword(password string) (pwd string) {
 	return hex.EncodeToString(h.Sum([]byte(password)))
 }
 
-func QueryUserByNameAndPwd(name string, pwd string) (err error) {
-	var password = encryptPassword(pwd)
+func QueryUserByNameAndPwd(loginUser *modles.LoginUser) (err error) {
+	var password = encryptPassword(loginUser.UserName)
 
 	strSql := "select id,name,password from user where name = ?"
 	db := mysql.GetDb()
 	var user = &modles.UserDO{}
-	err = db.Get(user, strSql, name)
+	err = db.Get(user, strSql, loginUser.Password)
 	if err == sql.ErrNoRows {
 		return errors.New("用户不存在")
 	}
@@ -56,5 +56,6 @@ func QueryUserByNameAndPwd(name string, pwd string) (err error) {
 	if password != user.Password {
 		return errors.New("密码输入错误")
 	}
+	loginUser.Id = user.Id
 	return err
 }

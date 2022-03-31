@@ -3,6 +3,7 @@ package logic
 import (
 	userDao "web_app/dao/user"
 	"web_app/modles"
+	"web_app/pkg/jwt"
 	"web_app/pkg/snowflake"
 )
 
@@ -23,6 +24,11 @@ func SignUp(user *modles.UserSignUp) (err error) {
 	return userDao.InsertUser(signUser)
 }
 
-func LoginUser(loginUser *modles.LoginUser) error {
-	return userDao.QueryUserByNameAndPwd(loginUser.UserName, loginUser.Password)
+func LoginUser(loginUser *modles.LoginUser) (jwtToken string, err error) {
+
+	if err = userDao.QueryUserByNameAndPwd(loginUser); err != nil {
+		return "", err
+	}
+
+	return jwt.GenToken(loginUser.Id, loginUser.UserName)
 }

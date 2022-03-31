@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"web_app/controllers"
 	"web_app/logger"
+	auth "web_app/middlewares"
 	"web_app/settings"
 )
 
@@ -28,6 +29,8 @@ func Setup(conf *settings.AppConfig) *gin.Engine {
 	r.GET("/signup", controllers.SignUpHandler)
 
 	r.POST("/login", controllers.LoginHandler)
+
+	r.POST("/ping", auth.JwtAuthMiddleware())
 
 	return r
 }
